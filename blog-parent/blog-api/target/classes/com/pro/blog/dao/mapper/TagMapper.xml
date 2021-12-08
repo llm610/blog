@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pro.blog.dao.mapper.TagMapper">
+
+    <select id="findTagId" parameterType="long" resultType="com.pro.blog.dao.beans.Tag">
+    select id,avatar,tag_name as tagName from ms_tag
+    where id in
+    (select tag_id from ms_article_tag where article_id =#{articleId} )
+    </select>
+
+    <!--List<Long> findHot(int limit);-->
+    <select id="findHot" parameterType="int" resultType="java.lang.Long">
+     select tag_id from ms_article_tag
+     GROUP BY tag_id
+     order by count(*) DESC LIMIT #{limit};
+    </select>
+
+    <select id="findTagByTagId" parameterType="list" resultType="com.pro.blog.dao.beans.Tag">
+      select id,tag_name as tagName from ms_tag
+      where id in
+      <foreach collection="tagId" item="tagId" separator="," open="(" close=")">
+          #{tagId}
+      </foreach>
+    </select>
+</mapper>
